@@ -9,13 +9,22 @@ import (
 
 func main() {
 	client := github.NewClient(nil)
+	ctx := context.Background()
 
-	orgs, _, err := client.Organizations.List(context.Background(), "forstmeier", nil)
+	repoOpts := &github.RepositoryListOptions{}
+	repos, _, err := client.Repositories.List(ctx, "shipyardapp", repoOpts)
+	if err != nil {
+		fmt.Printf("error: %s", err.Error())
+	}
+	_ = repos
+
+	tagOpts := &github.ListOptions{}
+	tags, _, err := client.Repositories.ListTags(ctx, "shipyardapp", "ghtest", tagOpts)
 	if err != nil {
 		fmt.Printf("error: %s", err.Error())
 	}
 
-	for _, org := range orgs {
-		fmt.Printf("org: %+v\n", org)
+	for _, tag := range tags {
+		fmt.Printf("tag: %+v\n", tag)
 	}
 }
